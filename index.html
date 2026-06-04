@@ -38,7 +38,7 @@
      RESET
   ═══════════════════════════════════════════════════════ */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
   body {
     background: var(--bg);
     color: var(--text);
@@ -1017,7 +1017,10 @@
       padding: 48px 24px 32px;
       align-items: center;
       text-align: center;
-      overflow: visible;
+      overflow: hidden;
+      min-width: 0;
+      max-width: 100%;
+      width: 100%;
     }
     .avail-badge {
       justify-content: center;
@@ -1030,25 +1033,24 @@
       margin-bottom: 28px;
     }
 
-    /* Nav becomes a horizontal scrollable strip */
+    /* Nav wraps into a centered grid so all items are always visible */
     .panel-nav {
       flex-direction: row;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      scrollbar-width: none;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: 0;
-      justify-content: flex-start;
       width: 100%;
+      max-width: 100%;
+      min-width: 0;
       padding-bottom: 4px;
       flex: none;
       margin-bottom: 24px;
     }
-    .panel-nav::-webkit-scrollbar { display: none; }
     .nav-item {
       flex-direction: column;
       align-items: center;
       gap: 6px;
-      padding: 8px 14px;
+      padding: 6px 12px;
       white-space: nowrap;
       font-size: 10px;
     }
@@ -1065,9 +1067,11 @@
       margin-top: 8px;
     }
 
-    .right-panel  { padding: 40px 24px 80px; }
+    .right-panel  { padding: 40px 24px 80px; min-width: 0; max-width: 100%; width: 100%; }
     .exp-card     { grid-template-columns: 1fr; gap: 0; }
     .exp-period   { padding-top: 0; margin-bottom: 4px; }
+    .edu-card     { grid-template-columns: 1fr; gap: 0; }
+    .edu-period   { padding-top: 0; margin-bottom: 4px; }
     .proj-card    { grid-template-columns: 1fr; }
     .proj-thumb   { width: 100%; height: 56px; }
     .cert-card    { flex-direction: column; }
@@ -1079,11 +1083,97 @@
     .modal-title  { font-size: 16px; }
   }
 
+  /* ═══════════════════════════════════════════════════════
+     SCROLL DOWN INDICATOR
+  ═══════════════════════════════════════════════════════ */
+  .scroll-down {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 8px;
+    opacity: 1;
+    transition: opacity 0.4s ease, color 0.2s;
+    animation: scrollHint 0.8s ease 1.2s both;
+    z-index: 5;
+  }
+  .scroll-down:hover { color: var(--accent); }
+  .scroll-down svg {
+    animation: bounce 1.6s ease-in-out infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(6px); }
+  }
+  @keyframes scrollHint {
+    from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+  .scroll-down.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* On mobile the left panel is not viewport-height, so hide the absolute arrow
+     and show an inline version below the header instead */
+  @media (max-width: 768px) {
+    .scroll-down-desktop { display: none; }
+    .scroll-down-mobile {
+      display: flex;
+      justify-content: center;
+      margin: 4px 0 8px;
+    }
+    .scroll-down-mobile button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 8px;
+      opacity: 1;
+      transition: opacity 0.4s ease, color 0.2s;
+      animation: scrollHintMobile 0.8s ease 1.2s both;
+    }
+    .scroll-down-mobile button:hover { color: var(--accent); }
+    .scroll-down-mobile svg { animation: bounce 1.6s ease-in-out infinite; }
+    .scroll-down-mobile.hidden { opacity: 0; pointer-events: none; }
+    @keyframes scrollHintMobile {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  }
+  @media (min-width: 769px) {
+    .scroll-down-mobile { display: none; }
+  }
+
   @media (max-width: 480px) {
-    .panel-role   { font-size: 14px; }
-    .section      { margin-bottom: 72px; }
-    .send-btn     { width: 100%; justify-content: center; }
-    .modal-card   { padding: 20px; max-height: 90vh; }
+    .panel-role    { font-size: 14px; }
+    .panel-tagline { margin-bottom: 20px; font-size: 13px; }
+    .left-panel    { padding: 36px 20px 24px; }
+    .section       { margin-bottom: 56px; scroll-margin-top: 56px; }
+    .right-panel   { padding: 32px 20px 64px; }
+    .exp-card      { padding: 14px 0; }
+    .send-btn      { width: 100%; justify-content: center; }
+    .modal-card    { padding: 20px; max-height: 90vh; }
   }
   </style>
 </head>
@@ -1181,7 +1271,23 @@
     <p class="footer-text">© <span class="yr"></span> Pattrawut Sukkaew</p>
   </div>
 
+  <!-- Scroll down arrow — desktop (absolute positioned inside sticky panel) -->
+  <button class="scroll-down scroll-down-desktop" id="scroll-down-btn" aria-label="Scroll down">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </button>
+
 </aside>
+
+<!-- Scroll down arrow — mobile (inline below header) -->
+<div class="scroll-down-mobile" id="scroll-down-mobile">
+  <button id="scroll-down-btn-mobile" aria-label="Scroll down">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </button>
+</div>
 
 <!-- ══════════════════════════════════════════════
      RIGHT PANEL
@@ -1775,6 +1881,29 @@ backToTop.addEventListener('click', () => {
    YEAR
 ══════════════════════════════════════════════ */
 document.querySelectorAll('.yr').forEach(el => el.textContent = new Date().getFullYear());
+
+/* ══════════════════════════════════════════════
+   SCROLL DOWN INDICATOR
+══════════════════════════════════════════════ */
+const scrollDownBtns = [
+  document.getElementById('scroll-down-btn'),
+  document.getElementById('scroll-down-btn-mobile'),
+].filter(Boolean);
+
+const scrollDownMobileWrap = document.getElementById('scroll-down-mobile');
+
+scrollDownBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('about')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+window.addEventListener('scroll', () => {
+  const past = window.scrollY > 80;
+  document.getElementById('scroll-down-btn')?.classList.toggle('hidden', past);
+  if (scrollDownMobileWrap) scrollDownMobileWrap.classList.toggle('hidden', past);
+}, { passive: true });
 </script>
 </body>
 </html>
