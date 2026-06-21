@@ -278,9 +278,13 @@
     padding: 20px;
     border-radius: 12px;
     margin-bottom: 2px;
-    transition: background 0.25s var(--ease);
+    transition: background 0.25s var(--ease), box-shadow 0.25s var(--ease);
   }
-  .exp-card:hover { background: var(--hover-bg); }
+  .exp-card:hover {
+    background: rgba(29,111,232,0.14);
+    box-shadow: 0 0 0 1px rgba(29,111,232,0.30),
+                0 10px 36px rgba(29,111,232,0.28);
+  }
 
   /* Period — left column */
   .exp-period {
@@ -342,6 +346,19 @@
   .exp-client {
     font-size: 12px;
     color: var(--muted);
+  }
+  /* Client links — same accent hover as company links (Aureus / Aware) */
+  .exp-client-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    color: inherit;
+    border-bottom: 1px solid rgba(136,146,176,0.3);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .exp-client-link:hover {
+    color: var(--accent);
+    border-bottom-color: rgba(29,111,232,0.5);
   }
 
   /* Summary description — 2-3 sentences, no clamp needed */
@@ -1161,8 +1178,11 @@
       to   { opacity: 1; transform: translateY(0); }
     }
   }
+  /* The scroll-down arrow is only useful as a scroll hint on phones.
+     Hide it on tablets and desktops for a cleaner left-panel layout. */
   @media (min-width: 769px) {
-    .scroll-down-mobile { display: none; }
+    .scroll-down-mobile  { display: none; }
+    .scroll-down-desktop { display: none; }
   }
 
   @media (max-width: 480px) {
@@ -1340,19 +1360,11 @@
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
             </a>
             <span class="emp-badge">Contract</span>
-            <span class="exp-client"> · Client: <a href="https://www.counterservice.co.th/en" target="_blank" rel="noopener" style="color:inherit;border-bottom:1px solid rgba(136,146,176,0.3);transition:border-color 0.2s;display:inline-flex;align-items:center;gap:3px;">Counter Service Co., Ltd.<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a></span>
+            <span class="exp-client"> · Client: <a href="https://www.counterservice.co.th/en" target="_blank" rel="noopener" class="exp-client-link">Counter Service Co., Ltd.<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a></span>
           </div>
           <div class="exp-desc-wrap">
             <p class="exp-desc">Leading POS system testing and regression activities for Counter Service Co., Ltd., collaborating with System Analysts and Developers to validate system stability across every release. Designing automation test flows based on real customer workflows to accelerate regression coverage.</p>
             <div class="exp-full-desc">Design and execute test cases for system testing activities. Perform Regression Testing and Defect Retesting to ensure stability after fixes. Support deployment and production release activities. Test POS systems and related workflows. Develop automation testing flows based on customer workflows. Work directly with System Analysts, Developers, and related teams throughout the testing process.</div>
-            <button class="read-more-btn">Read more <span aria-hidden="true">→</span></button>
-          </div>
-          <div class="tags">
-            <span class="tag">Regression Testing</span>
-            <span class="tag">Test Automation</span>
-            <span class="tag">POS Testing</span>
-            <span class="tag">Defect Retesting</span>
-            <span class="tag">Release Support</span>
           </div>
         </div>
       </div>
@@ -1373,18 +1385,11 @@
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
             </a>
             <span class="emp-badge">Contract</span>
-            <span class="exp-client"> · Client: <a href="https://www.ais.th/en/consumers" target="_blank" rel="noopener" style="color:inherit;border-bottom:1px solid rgba(136,146,176,0.3);transition:border-color 0.2s;display:inline-flex;align-items:center;gap:3px;">AIS (Advanced Info Service PCL)<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a></span>
+            <span class="exp-client"> · Client: <a href="https://www.ais.th/en/consumers" target="_blank" rel="noopener" class="exp-client-link">AIS (Advanced Info Service PCL)<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></a></span>
           </div>
           <div class="exp-desc-wrap">
             <p class="exp-desc">Served as the primary UAT Coordinator for AIS projects, overseeing end-to-end business workflows and validating that data and processes flowed correctly across interconnected systems. Monitored testing progress, tracked defects, consolidated testing evidence, and provided status updates to support successful project delivery and business acceptance.</p>
             <div class="exp-full-desc">Prepared and maintained Test Cases, User Journey documents, and testing documentation. Conducted UAT sessions with clients and coordinated testing activities with third-party teams. Tracked defects, followed up on resolutions, and reported daily progress to the Team Leader. Managed UAT data, evidence, and documentation to ensure quality and traceability. Collaborated with Tester teams and Business Analysts (BA) from various system modules to ensure smooth UAT execution and end-to-end workflow validation.</div>
-            <button class="read-more-btn">Read more <span aria-hidden="true">→</span></button>
-          </div>
-          <div class="tags">
-            <span class="tag">UAT</span>
-            <span class="tag">Test Case Design</span>
-            <span class="tag">Defect Tracking</span>
-            <span class="tag">Client Coordination</span>
           </div>
         </div>
       </div>
@@ -1409,14 +1414,6 @@
           <div class="exp-desc-wrap">
             <p class="exp-desc">Oversaw end-to-end QA activities across multiple concurrent projects, leading SIT, UAT, Regression, and Go-Live testing cycles as the primary QA coordinator. Provided mentorship and direction to junior QA engineers while conducting API validation with Postman and database integrity testing with SQL Server.</p>
             <div class="exp-full-desc">Managed QA activities across multiple concurrent projects, ensuring testing timelines, release readiness, and overall product quality. Planned testing scope, test strategy, and execution activities for SIT, UAT, Regression Testing, and Go-Live phases. Acted as the primary QA coordinator for UAT sessions conducted both online and on-site, ensuring testing activities were executed according to project plans. Assigned tasks, provided guidance, and mentored junior QA team members to improve testing quality and team performance. Analyzed defects, project risks, and testing impacts to improve system stability and release confidence. Performed API testing using Postman and validated database integrity using Microsoft SQL Server. Utilized Selenium to support automation and regression testing activities, improving testing efficiency and coverage. Collaborated closely with System Analysts (SA), Project Managers (PM), Developers, and Business Teams to drive testing execution and ensure successful project delivery and release readiness.</div>
-            <button class="read-more-btn">Read more <span aria-hidden="true">→</span></button>
-          </div>
-          <div class="tags">
-            <span class="tag">SIT / UAT</span>
-            <span class="tag">Postman</span>
-            <span class="tag">SQL Server</span>
-            <span class="tag">Team Lead</span>
-            <span class="tag">Regression Testing</span>
           </div>
         </div>
       </div>
@@ -1441,14 +1438,6 @@
           <div class="exp-desc-wrap">
             <p class="exp-desc">Executed comprehensive functional, regression, and end-to-end testing across Web, Android (Tablet/POS), and LINE OA platforms for multiple client engagements. Authored test cases, managed defect lifecycle in JIRA, performed database validation with SQL Server, and partnered with SAs, PMs, and Developers to support timely project delivery.</p>
             <div class="exp-full-desc">Performed Functional, User Journey, E2E, SIT, UAT, Retesting, and Regression Testing for Web, Android (Tablet/POS), and LINE OA systems. Prepared Test Cases, Test Scripts, Scenarios, and Reports. Tracked defects via JIRA and coordinated fixes with Developers. Performed API Testing with Postman and validated database data using SQL Server. Worked directly with SA, PM, and Developers to clarify requirements, validate fixes, and support testing activities.</div>
-            <button class="read-more-btn">Read more <span aria-hidden="true">→</span></button>
-          </div>
-          <div class="tags">
-            <span class="tag">Manual Testing</span>
-            <span class="tag">Postman</span>
-            <span class="tag">SQL Server</span>
-            <span class="tag">JIRA</span>
-            <span class="tag">Android / Web</span>
           </div>
         </div>
       </div>
@@ -1473,13 +1462,6 @@
           <div class="exp-desc-wrap">
             <p class="exp-desc">Delivered multi-channel customer support via email, phone, and online, diagnosing and escalating software issues to internal teams for efficient resolution. Performed post-configuration regression validation on Web and Android applications and maintained structured issue tracking via Mantis and JIRA.</p>
             <div class="exp-full-desc">Provided customer support via email, phone, and online channels. Analyzed and troubleshot reported issues. Coordinated with internal teams to resolve issues efficiently. Tested Web and Android applications after configuration updates before customer deployment. Tracked issues using Mantis and JIRA. Prepared weekly, monthly, quarterly, and yearly issue summary reports.</div>
-            <button class="read-more-btn">Read more <span aria-hidden="true">→</span></button>
-          </div>
-          <div class="tags">
-            <span class="tag">Customer Support</span>
-            <span class="tag">Mantis</span>
-            <span class="tag">JIRA</span>
-            <span class="tag">Android / Web</span>
           </div>
         </div>
       </div>
@@ -1488,7 +1470,7 @@
 
     <!-- Resume CTA -->
     <div class="resume-cta" data-reveal>
-      <a href="assets/cv-pattrawut-sukkaew.pdf" target="_blank" rel="noopener" class="resume-btn">
+      <a href="resume.html" target="_blank" rel="noopener" class="resume-btn">
         View Full Resume
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
       </a>
