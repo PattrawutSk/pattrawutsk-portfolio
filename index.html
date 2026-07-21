@@ -182,7 +182,7 @@
     font-weight: 300;
     color: var(--muted);
     line-height: 1.7;
-    margin-bottom: 18px;
+    margin-bottom: 28px;
   }
 
   /* ── NAV — brittanychiang growing-line style ── */
@@ -191,7 +191,9 @@
     flex-direction: column;
     gap: 0;
     flex-shrink: 0;
-    margin: auto 0;
+    /* Sit just beneath the hero text (not vertically centred), so the menu
+       reads as part of the Hero block. The bottom cluster stays base-anchored. */
+    margin: 0;
   }
   .nav-item {
     display: flex;
