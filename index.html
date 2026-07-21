@@ -18,17 +18,17 @@
      TOKENS
   ═══════════════════════════════════════════════════════ */
   :root {
-    --bg:         #0a0f1e;
-    --text:       #ccd6f6;
-    --white:      #e6f1ff;
-    --muted:      #8892b0;
-    --faint:      #4a5568;
-    --accent:     #1D6FE8;
-    --accent-dim: rgba(29,111,232,0.08);
-    --hover-bg:   rgba(29,111,232,0.06);
-    --tag-bg:     rgba(29,111,232,0.10);
-    --tag-text:   #7eb3f5;
-    --green:      #4ade80;
+    --bg:         #0f131b;
+    --text:       #d8dbe2;
+    --white:      #f0f2f6;
+    --muted:      #aab0bc;
+    --faint:      #7a818e;
+    --accent:     #5B8DEF;
+    --accent-dim: rgba(91,141,239,0.10);
+    --hover-bg:   rgba(91,141,239,0.07);
+    --tag-bg:     rgba(91,141,239,0.12);
+    --tag-text:   #9dbdf5;
+    --green:      #56cc88;
     --sans: 'Inter', 'San Francisco', 'Segoe UI', system-ui, sans-serif;
     --mono: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
     --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -38,7 +38,7 @@
      RESET
   ═══════════════════════════════════════════════════════ */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; overflow-x: hidden; }
+  html { scroll-behavior: smooth; overflow-x: clip; }
   body {
     background: var(--bg);
     color: var(--text);
@@ -47,7 +47,7 @@
     font-weight: 300;
     line-height: 1.7;
     min-height: 100vh;
-    overflow-x: hidden;
+    overflow-x: clip;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "cv11";
@@ -84,16 +84,39 @@
      LEFT PANEL
   ───────────────────────────────────────────────────── */
   .left-panel {
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: max(0px, calc((100% - 1280px) / 2));
+    width: 360px;
     height: 100vh;
-    padding: 80px 52px 52px;
+    padding: 64px 52px 40px;
     display: flex;
     flex-direction: column;
     background: var(--bg);
+    overflow: hidden;
+    z-index: 2;
+  }
+  /* Identity (top) · nav (middle) · bottom cluster (base).
+     .panel-scroll takes the free space and is the ONLY part that can scroll
+     (only ever needed on very short viewports); the bottom cluster is a
+     non-shrinking sibling, so the footer + resume buttons are permanently
+     anchored to the base and can never be clipped or slide away. */
+  .panel-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
     scrollbar-width: none;
-    z-index: 1;
+  }
+  .panel-scroll::-webkit-scrollbar { display: none; }
+  .panel-head { flex-shrink: 0; }
+  .panel-bottom {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding-top: 24px;
   }
   .left-panel::-webkit-scrollbar { display: none; }
 
@@ -121,6 +144,23 @@
     55%      { opacity:.7; box-shadow:0 0 0 7px rgba(74,222,128,0); }
   }
 
+  /* Hero availability badge — identity block, below the job title */
+  .hero-avail {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: var(--mono);
+    letter-spacing: 0.04em;
+    color: var(--green);
+    padding: 5px 12px 5px 11px;
+    border: 1px solid rgba(86,204,136,0.28);
+    border-radius: 99px;
+    background: rgba(86,204,136,0.07);
+    margin-bottom: 18px;
+  }
+
   /* Name — single line, scales with viewport */
   .panel-name {
     font-size: clamp(22px, 3vw, 32px);
@@ -142,7 +182,7 @@
     font-weight: 300;
     color: var(--muted);
     line-height: 1.7;
-    margin-bottom: 48px;
+    margin-bottom: 18px;
   }
 
   /* ── NAV — brittanychiang growing-line style ── */
@@ -150,7 +190,8 @@
     display: flex;
     flex-direction: column;
     gap: 0;
-    flex: 1;
+    flex-shrink: 0;
+    margin: auto 0;
   }
   .nav-item {
     display: flex;
@@ -188,7 +229,6 @@
     display: flex;
     gap: 14px;
     align-items: center;
-    margin-top: 48px;
   }
   .social-btn {
     display: flex;
@@ -204,12 +244,74 @@
   }
   .social-btn:hover {
     color: var(--accent);
-    border-color: rgba(29,111,232,0.38);
+    border-color: rgba(91,141,239,0.38);
     background: var(--accent-dim);
   }
 
+  /* ── Sidebar resume mini-section ── */
+  .resume-block {
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.015);
+  }
+  .resume-block-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 13px;
+  }
+  .resume-block-head svg { color: var(--accent); flex-shrink: 0; }
+  .resume-block-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+  .resume-actions { display: flex; flex-direction: column; gap: 8px; }
+  .resume-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 10px 13px;
+    border-radius: 8px;
+    transition: background 0.22s, border-color 0.22s, color 0.22s, transform 0.22s;
+  }
+  .resume-action svg { flex-shrink: 0; transition: transform 0.22s; }
+  /* Primary — View */
+  .resume-action--view {
+    color: var(--accent);
+    border: 1px solid rgba(91,141,239,0.35);
+    background: var(--accent-dim);
+  }
+  .resume-action--view:hover {
+    border-color: rgba(91,141,239,0.65);
+    background: rgba(91,141,239,0.16);
+    transform: translateY(-1px);
+  }
+  .resume-action--view:hover svg { transform: translate(2px,-2px); }
+  /* Secondary — Download */
+  .resume-action--download {
+    color: var(--muted);
+    border: 1px solid rgba(255,255,255,0.09);
+    background: transparent;
+  }
+  .resume-action--download:hover {
+    color: var(--white);
+    border-color: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.04);
+    transform: translateY(-1px);
+  }
+  .resume-action--download:hover svg { transform: translateY(2px); }
+
   /* ── Panel footer ── */
-  .panel-footer { margin-top: 32px; }
+  .panel-footer { margin-top: 0; }
   .footer-text {
     font-size: 13px;
     font-family: var(--mono);
@@ -221,6 +323,7 @@
      RIGHT PANEL
   ───────────────────────────────────────────────────── */
   .right-panel {
+    grid-column: 2;
     padding: 80px 88px 160px 80px;
     background: var(--bg);
     position: relative;
@@ -259,7 +362,7 @@
   .about-body strong { color: var(--text); font-weight: 500; }
   .about-body a {
     color: var(--accent);
-    border-bottom: 1px solid rgba(29,111,232,0.3);
+    border-bottom: 1px solid rgba(91,141,239,0.3);
     transition: border-color 0.2s;
   }
   .about-body a:hover { border-color: var(--accent); }
@@ -281,9 +384,9 @@
     transition: background 0.25s var(--ease), box-shadow 0.25s var(--ease);
   }
   .exp-card:hover {
-    background: rgba(29,111,232,0.14);
-    box-shadow: 0 0 0 1px rgba(29,111,232,0.30),
-                0 10px 36px rgba(29,111,232,0.28);
+    background: rgba(91,141,239,0.14);
+    box-shadow: 0 0 0 1px rgba(91,141,239,0.30),
+                0 10px 36px rgba(91,141,239,0.28);
   }
 
   /* Period — left column */
@@ -337,7 +440,7 @@
     font-weight: 400;
     padding: 2px 8px;
     border-radius: 99px;
-    background: rgba(29,111,232,0.15);
+    background: rgba(91,141,239,0.15);
     color: var(--tag-text);
     letter-spacing: 0.03em;
     white-space: nowrap;
@@ -358,7 +461,7 @@
   }
   .exp-client-link:hover {
     color: var(--accent);
-    border-bottom-color: rgba(29,111,232,0.5);
+    border-bottom-color: rgba(91,141,239,0.5);
   }
 
   /* Summary description — 2-3 sentences, no clamp needed */
@@ -415,7 +518,7 @@
     font-size: 13px;
     font-weight: 500;
     color: var(--accent);
-    border: 1px solid rgba(29,111,232,0.35);
+    border: 1px solid rgba(91,141,239,0.35);
     padding: 9px 20px;
     border-radius: 8px;
     letter-spacing: 0.01em;
@@ -423,7 +526,7 @@
   }
   .resume-btn:hover {
     background: var(--accent-dim);
-    border-color: rgba(29,111,232,0.6);
+    border-color: rgba(91,141,239,0.6);
     transform: translateY(-1px);
   }
   .resume-btn svg { flex-shrink: 0; transition: transform 0.22s; }
@@ -449,13 +552,14 @@
     color: var(--muted);
     padding: 5px 14px;
     border-radius: 99px;
+    white-space: nowrap;
     border: 1px solid rgba(255,255,255,0.08);
     background: rgba(255,255,255,0.03);
     transition: color 0.2s, border-color 0.2s, background 0.2s;
   }
   .chip:hover {
     color: var(--accent);
-    border-color: rgba(29,111,232,0.32);
+    border-color: rgba(91,141,239,0.32);
     background: var(--accent-dim);
   }
 
@@ -479,15 +583,15 @@
     height: 68px;
     border-radius: 6px;
     border: 1px solid rgba(255,255,255,0.07);
-    background: rgba(29,111,232,0.06);
+    background: rgba(91,141,239,0.06);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: rgba(29,111,232,0.4);
+    color: rgba(91,141,239,0.4);
     transition: border-color 0.2s;
   }
-  .proj-card:hover .proj-thumb { border-color: rgba(29,111,232,0.25); }
+  .proj-card:hover .proj-thumb { border-color: rgba(91,141,239,0.25); }
 
   .proj-category {
     font-family: var(--mono);
@@ -532,7 +636,7 @@
   }
   .proj-link:hover {
     color: var(--accent);
-    border-color: rgba(29,111,232,0.3);
+    border-color: rgba(91,141,239,0.3);
     background: var(--accent-dim);
   }
 
@@ -571,7 +675,7 @@
     transition: border-color 0.2s, transform 0.2s;
   }
   .cert-img-btn:hover .cert-img {
-    border-color: rgba(29,111,232,0.28);
+    border-color: rgba(91,141,239,0.28);
     transform: scale(1.04);
   }
 
@@ -581,7 +685,7 @@
     position: fixed;
     inset: 0;
     z-index: 300;
-    background: rgba(15,23,42,0.80);
+    background: rgba(10,12,16,0.82);
     align-items: center;
     justify-content: center;
     padding: 20px;
@@ -676,7 +780,7 @@
   }
   .contact-blurb a {
     color: var(--accent);
-    border-bottom: 1px solid rgba(29,111,232,0.3);
+    border-bottom: 1px solid rgba(91,141,239,0.3);
     transition: border-color 0.2s;
   }
   .contact-blurb a:hover { border-color: var(--accent); }
@@ -708,8 +812,8 @@
   .form-textarea::placeholder { color: var(--faint); }
   .form-input:focus,
   .form-textarea:focus {
-    border-color: rgba(29,111,232,0.55);
-    box-shadow: 0 0 0 3px rgba(29,111,232,0.09);
+    border-color: rgba(91,141,239,0.55);
+    box-shadow: 0 0 0 3px rgba(91,141,239,0.09);
   }
   .form-textarea { height: 120px; resize: vertical; min-height: 80px; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -753,7 +857,7 @@
     position: fixed;
     inset: 0;
     z-index: 200;
-    background: rgba(15,23,42,0.75);
+    background: rgba(10,12,16,0.78);
     align-items: center;
     justify-content: center;
     padding: 20px;
@@ -764,8 +868,8 @@
 
   .modal-card {
     position: relative;
-    background: #112240;
-    border: 1px solid rgba(100,255,218,0.08);
+    background: #20242e;
+    border: 1px solid rgba(255,255,255,0.08);
     border-radius: 16px;
     padding: 40px;
     max-width: 560px;
@@ -871,7 +975,9 @@
   ═══════════════════════════════════════════════════════ */
   .site-footer {
     position: relative;
-    z-index: 1;
+    /* Must sit BELOW .layout (z-index:1) so it can never paint over the
+       fixed left sidebar as it scrolls up into view at the bottom of the page. */
+    z-index: 0;
     border-top: 1px solid rgba(255,255,255,0.06);
     padding: 48px 80px;
     display: flex;
@@ -919,7 +1025,7 @@
   }
   .footer-social-btn:hover {
     color: var(--accent);
-    border-color: rgba(29,111,232,0.38);
+    border-color: rgba(91,141,239,0.38);
     background: var(--accent-dim);
   }
   .footer-email-link {
@@ -935,7 +1041,7 @@
   }
   .footer-email-link:hover {
     color: var(--accent);
-    border-color: rgba(29,111,232,0.38);
+    border-color: rgba(91,141,239,0.38);
     background: var(--accent-dim);
   }
 
@@ -976,8 +1082,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(29,111,232,0.15);
-    border: 1px solid rgba(29,111,232,0.3);
+    background: rgba(91,141,239,0.15);
+    border: 1px solid rgba(91,141,239,0.3);
     border-radius: 10px;
     color: var(--accent);
     cursor: pointer;
@@ -986,7 +1092,7 @@
     transition: opacity 0.3s, background 0.2s, transform 0.2s;
   }
   .back-to-top.visible { opacity: 1; pointer-events: auto; }
-  .back-to-top:hover { background: rgba(29,111,232,0.25); transform: translateY(-2px); }
+  .back-to-top:hover { background: rgba(91,141,239,0.25); transform: translateY(-2px); }
 
   @media (max-width: 768px) {
     .site-footer { padding: 40px 24px; gap: 24px; }
@@ -1004,6 +1110,7 @@
   .fi-5 { animation-delay: 0.38s; }
   .fi-6 { animation-delay: 0.46s; }
   .fi-7 { animation-delay: 0.54s; }
+  .fi-8 { animation-delay: 0.62s; }
   @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
 
   [data-reveal] {
@@ -1018,7 +1125,7 @@
   ═══════════════════════════════════════════════════════ */
   @media (max-width: 1100px) {
     .layout       { grid-template-columns: 300px 1fr; }
-    .left-panel   { padding: 64px 40px 48px; }
+    .left-panel   { width: 300px; padding: 64px 40px 48px; }
     .right-panel  { padding: 64px 52px 120px 52px; }
   }
 
@@ -1030,6 +1137,7 @@
     /* Left panel becomes a centered top header */
     .left-panel {
       position: relative;
+      left: auto;
       height: auto;
       padding: 48px 24px 32px;
       align-items: center;
@@ -1039,6 +1147,11 @@
       max-width: 100%;
       width: 100%;
     }
+    /* On mobile the panel is an auto-height header: undo the fixed-sidebar
+       scroll region so everything flows naturally and stays centered. */
+    .panel-scroll { width: 100%; overflow: visible; }
+    .panel-head   { width: 100%; }
+    .panel-bottom { width: 100%; padding-top: 0; }
     .avail-badge {
       justify-content: center;
     }
@@ -1047,7 +1160,10 @@
       white-space: normal;
     }
     .panel-tagline {
-      margin-bottom: 28px;
+      margin-bottom: 24px;
+    }
+    .hero-avail {
+      margin-bottom: 16px;
     }
 
     /* Nav wraps into a centered grid so all items are always visible */
@@ -1084,7 +1200,15 @@
       margin-top: 8px;
     }
 
-    .right-panel  { padding: 40px 24px 80px; min-width: 0; max-width: 100%; width: 100%; }
+    /* Resume mini-section: centered card, constrained width */
+    .resume-block {
+      width: 100%;
+      max-width: 320px;
+      margin: 32px auto 0;
+      text-align: left;
+    }
+
+    .right-panel  { grid-column: auto; padding: 40px 24px 80px; min-width: 0; max-width: 100%; width: 100%; }
     .exp-card     { grid-template-columns: 1fr; gap: 0; }
     .exp-period   { padding-top: 0; margin-bottom: 4px; }
     .edu-card     { grid-template-columns: 1fr; gap: 0; }
@@ -1239,11 +1363,20 @@
   </div>
   -->
 
-  <h1 class="panel-name fi fi-2">Pattrawut Sukkaew</h1>
-  <p  class="panel-role fi fi-3">QA Engineer</p>
-  <p  class="panel-tagline fi fi-4">
-    QA Engineer | Manual Testing &amp; Test Automation
-  </p>
+  <!-- Scrollable middle: identity + nav. The bottom cluster below stays pinned. -->
+  <div class="panel-scroll">
+
+  <div class="panel-head">
+    <div class="hero-avail fi fi-1" role="status" aria-label="Open to new opportunities">
+      <span class="avail-dot"></span>
+      Open to New Opportunities
+    </div>
+    <h1 class="panel-name fi fi-2">Pattrawut Sukkaew</h1>
+    <p  class="panel-role fi fi-3">QA Engineer</p>
+    <p  class="panel-tagline fi fi-4">
+      QA Engineer | Manual Testing &amp; Test Automation
+    </p>
+  </div>
 
   <nav class="panel-nav fi fi-5" aria-label="Page sections">
     <button class="nav-item active" data-target="about">
@@ -1256,7 +1389,7 @@
       <span class="nav-line"></span>Skills
     </button>
     <button class="nav-item" data-target="projects">
-      <span class="nav-line"></span>Projects
+      <span class="nav-line"></span>QA Showcase
     </button>
     <button class="nav-item" data-target="certifications">
       <span class="nav-line"></span>Certifications
@@ -1266,7 +1399,47 @@
     </button>
   </nav>
 
-  <div class="fi fi-6">
+  </div><!-- /.panel-scroll -->
+
+  <!-- Bottom cluster — permanently anchored to the base of the fixed sidebar -->
+  <div class="panel-bottom">
+
+  <!-- Resume mini-section.
+       To go live: replace /resume.pdf with the real file (keep the same name)
+       — no markup changes needed. -->
+  <div class="resume-block fi fi-6">
+    <div class="resume-block-head">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="8" y1="13" x2="16" y2="13"/>
+        <line x1="8" y1="17" x2="16" y2="17"/>
+      </svg>
+      <span class="resume-block-title">Resume</span>
+    </div>
+    <div class="resume-actions">
+      <a href="resume.pdf" target="_blank" rel="noopener"
+         class="resume-action resume-action--view" aria-label="View resume in a new tab">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+          <polyline points="15 3 21 3 21 9"/>
+          <line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+        View Resume
+      </a>
+      <a href="resume.pdf" download="Pattrawut-Sukkaew-Resume.pdf"
+         class="resume-action resume-action--download" aria-label="Download resume as a PDF file">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Download PDF
+      </a>
+    </div>
+  </div>
+
+  <div class="fi fi-7">
     <div class="panel-socials">
       <a href="https://github.com/PattrawutSk" target="_blank" rel="noopener" class="social-btn" aria-label="GitHub">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
@@ -1287,9 +1460,11 @@
     </div>
   </div>
 
-  <div class="panel-footer fi fi-7">
+  <div class="panel-footer fi fi-8">
     <p class="footer-text">© <span class="yr"></span> Pattrawut Sukkaew</p>
   </div>
+
+  </div><!-- /.panel-bottom -->
 
   <!-- Scroll down arrow — desktop (absolute positioned inside sticky panel) -->
   <button class="scroll-down scroll-down-desktop" id="scroll-down-btn" aria-label="Scroll down">
@@ -1491,8 +1666,11 @@
           <span class="chip">Mobile Testing (iOS / Android)</span>
           <span class="chip">Web Testing</span>
           <span class="chip">POS System Testing</span>
+          <span class="chip">Test Scenario Design</span>
+          <span class="chip">Test Case Design</span>
+          <span class="chip">User Journey Design</span>
           <span class="chip">Regression Testing</span>
-          <span class="chip">UAT / SIT</span>
+          <span class="chip">SIT / UAT</span>
           <span class="chip">Defect Management</span>
         </div>
       </div>
@@ -1513,7 +1691,8 @@
           <span class="chip">Postman</span>
           <span class="chip">JIRA</span>
           <span class="chip">ClickUp</span>
-          <span class="chip">SQL Server</span>
+          <span class="chip">SQL</span>
+          <span class="chip">Microsoft SQL Server</span>
           <span class="chip">DBeaver</span>
           <span class="chip">Mantis</span>
         </div>
@@ -1540,6 +1719,8 @@
       <div data-reveal>
         <div class="skill-group-label">Domain Experience</div>
         <div class="chips">
+          <span class="chip">OMS (Order Management System)</span>
+          <span class="chip">DMS (Document Management System)</span>
           <span class="chip">POS Systems</span>
           <span class="chip">Retail &amp; Payment Systems</span>
           <span class="chip">E-Commerce Systems</span>
@@ -1562,12 +1743,12 @@
 
   <!-- ─── PROJECTS ─── -->
   <section id="projects" class="section">
-    <span class="sec-label">Projects</span>
+    <span class="sec-label">QA Showcase</span>
     <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;gap:14px;border:1px dashed rgba(255,255,255,0.08);border-radius:12px;" data-reveal>
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(29,111,232,0.45)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(91,141,239,0.45)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
       </svg>
-      <p style="font-family:var(--mono);font-size:13px;color:var(--faint);letter-spacing:0.08em;">Coming soon — projects are being updated.</p>
+      <p style="font-family:var(--mono);font-size:13px;color:var(--faint);letter-spacing:0.08em;">Updating...</p>
     </div>
   </section>
 
@@ -1694,7 +1875,7 @@
     <span class="footer-nav-sep">·</span>
     <a href="#skills"         class="footer-nav-link">Skills</a>
     <span class="footer-nav-sep">·</span>
-    <a href="#projects"       class="footer-nav-link">Projects</a>
+    <a href="#projects"       class="footer-nav-link">QA Showcase</a>
     <span class="footer-nav-sep">·</span>
     <a href="#certifications" class="footer-nav-link">Certifications</a>
     <span class="footer-nav-sep">·</span>
@@ -1720,7 +1901,7 @@
 const spotlight = document.getElementById('spotlight');
 document.addEventListener('mousemove', (e) => {
   spotlight.style.background =
-    `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(29, 111, 232, 0.10), transparent 80%)`;
+    `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(91, 141, 239, 0.08), transparent 80%)`;
 });
 
 /* ══════════════════════════════════════════════
