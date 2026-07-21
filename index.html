@@ -1918,6 +1918,13 @@ function syncNav() {
   for (const sec of sections) {
     if (sec.getBoundingClientRect().top <= threshold) active = sec.id;
   }
+  // Bottom guard: the last section (Education) sits at the end of the page, so
+  // there isn't enough scroll room for its top to cross the threshold line.
+  // Once we've reached the bottom of the page, force-activate it.
+  const scrollBottom = window.scrollY + window.innerHeight;
+  if (scrollBottom >= document.documentElement.scrollHeight - 2) {
+    active = sections[sections.length - 1].id;
+  }
   navBtns.forEach(b => b.classList.toggle('active', b.dataset.target === active));
 }
 window.addEventListener('scroll', syncNav, { passive: true });
